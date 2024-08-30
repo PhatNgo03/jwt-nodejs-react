@@ -3,6 +3,9 @@ const handleHelloWorld = (req, res) => {
 }
 
 const handleUserPage = (req, res) => {
+
+    //model => get data from database
+
     return res.render("user.ejs");
 }
 
