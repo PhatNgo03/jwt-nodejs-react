@@ -11,6 +11,7 @@ const initWebRoutes = (app) => {
     //v1 : / path , v2 : handler
     router.get("/", homeController.handleHelloWorld);
     router.get("/user", homeController.handleUserPage);
+    router.post("/users/create-user", homeController.handleCreateNewUser);
     return app.use("/", router);
 }
 
