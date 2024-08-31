@@ -89,7 +89,6 @@ const updateUserInfo = async (email, username, id) => {
         Promise: bluebird,
     });
     try {
-
         const [rows, fields] = await connection.execute('UPDATE users SET email = ?, username= ? WHERE id = ?',
             [email, username, id]);
         return rows;
