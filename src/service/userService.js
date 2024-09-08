@@ -1,13 +1,5 @@
 import bcrypt from 'bcryptjs';
-
-import mysql from 'mysql2/promise';
-
-import bluebird from 'bluebird';
-
 import db from '../models/index'
-import { where } from 'sequelize/lib/sequelize';
-import { raw } from 'body-parser';
-import Model from 'sequelize/lib/model';
 
 const salt = bcrypt.genSaltSync(10);
 
