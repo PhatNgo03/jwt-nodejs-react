@@ -1,4 +1,3 @@
-import { where } from 'sequelize/lib/sequelize';
 import db from '../models/index';
 
 const getAllUser = async () => {
@@ -37,9 +36,10 @@ const getUserWithPagination = async (page, limit) => {
     try {
         let offset = (page - 1) * limit;
         const { count, rows } = await db.User.findAndCountAll({
-
             offset: offset,
             limit: limit,
+            attributes: ["id", "username", "email", "phone", "sex"],
+            include: { model: db.Group, attributes: ["name", "description"], },
         })
         let totalPages = Math.ceil(count / limit);
         let data = {
@@ -65,9 +65,12 @@ const getUserWithPagination = async (page, limit) => {
 
 const createNewUser = async (data) => {
     try {
-        await db.User.create({
-
-        })
+        await db.User.create(data);
+        return {
+            EM: 'create user ok',
+            EC: 0,
+            DT: []
+        }
     }
     catch (err) {
         console.log(err);
@@ -96,12 +99,32 @@ const updateUser = async (data) => {
 
 const deleteUser = async (id) => {
     try {
-        await db.User.delete({
+        let user = await db.User.findOne({
             where: { id: id }
         })
+        if (user) {
+            await user.destroy();
+            return {
+                EM: "Delete user successfully",
+                EC: 0,
+                DT: user,
+            }
+        }
+        else {
+            return {
+                EM: "User  not exist",
+                EC: 1,
+                DT: [],
+            }
+        }
     }
     catch (err) {
-        console.log(err);
+        console.log("Error in deleteUser: ", err);
+        return {
+            EM: "Something went wrong in the service",
+            EC: -2,
+            DT: [],
+        }
     }
 }
 
