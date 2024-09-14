@@ -98,26 +98,64 @@ const createNewUser = async (data) => {
         console.log(err);
     }
 }
-
 const updateUser = async (data) => {
     try {
+        if (!data.groupId) {
+            return {
+                EM: 'Error with empty GroupId',
+                EC: 1,
+                DT: 'group'
+            };
+        }
+
         let user = await db.User.findOne({
             where: { id: data.id }
-        })
-        if (user) {
-            //update
-            user.save({
+        });
 
-            })
+        if (user) {
+            // Check if email has changed and if the new email is already taken
+            if (data.email && data.email !== user.email) {
+                let isEmailExist = await checkEmailExist(data.email);
+                if (isEmailExist) {
+                    return {
+                        EM: 'The email is already existed',
+                        EC: 1,
+                        DT: 'email'
+                    };
+                }
+            }
+
+            // Update user data
+            await user.update({
+                username: data.username,
+                address: data.address,
+                sex: data.sex,
+                groupId: data.groupId,
+                email: data.email // Update email if provided
+            });
+
+            return {
+                EM: 'Update user success',
+                EC: 0,
+                DT: ''
+            };
+        } else {
+            return {
+                EM: 'User not found',
+                EC: 2,
+                DT: []
+            };
         }
-        else {
-            //not found
-        }
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
+        return {
+            EM: 'Something wrong with services',
+            EC: -2,
+            DT: []
+        };
     }
 }
+
 
 const deleteUser = async (id) => {
     try {
