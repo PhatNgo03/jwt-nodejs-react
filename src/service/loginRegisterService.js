@@ -1,8 +1,10 @@
+require('dotenv').config();
 import bcrypt from 'bcryptjs';
 import db from '../models/index'
 import { Op } from 'sequelize'
 const salt = bcrypt.genSaltSync(10);
-
+import { getGroupWithRoles } from "./JWTService";
+import { createJWT } from "../middleware/JWTAction";
 //hash user password
 const hashUserPassword = (userPassword) => {
     if (!userPassword) {
@@ -61,6 +63,7 @@ const registerNewUser = async (rawUserData) => {
             username: rawUserData.username,
             password: hashPassword,
             phone: rawUserData.phone,
+            groupId: 4
         })
         return {
 
@@ -70,7 +73,6 @@ const registerNewUser = async (rawUserData) => {
     }
     catch (e) {
         console.log(">>> Check erorr", e);
-        console.log("User Data:", rawUserData);
         return {
             EM: "Something wrongs in service..",
             EC: -2
@@ -93,21 +95,28 @@ const handleUserLogin = async (rawData) => {
                 ]
             }
         })
-        console.log(">>Check user :", user.get({ plain: true }))
-
         if (user) {
-            console.log(">>> found user with email/phone")
             let isCorrectPassword = checkPassword(rawData.password, user.password);
             if (isCorrectPassword === true) {
+
+                let groupWithRoles = await getGroupWithRoles(user);
+                let payload = {
+                    email: user.email,
+                    groupWithRoles,
+                    expiresIn: process.env.JWT_EXPIRES_IN
+                }
+                let token = createJWT(payload);
                 return {
                     EM: 'Ok',
                     EC: 0,
-                    DT: ''
+                    DT: {
+                        access_token: token,
+                        data: groupWithRoles
+                    }
                 }
             }
         }
 
-        console.log(">>> Not found user with email/phone", rawData.valueLogin, "password", rawData.password);
         return {
             EM: 'Your email or phone number or password is incorrect',
             EC: 1,

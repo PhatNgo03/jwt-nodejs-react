@@ -98,6 +98,7 @@ const createNewUser = async (data) => {
         console.log(err);
     }
 }
+
 const updateUser = async (data) => {
     try {
         if (!data.groupId) {
@@ -107,33 +108,16 @@ const updateUser = async (data) => {
                 DT: 'group'
             };
         }
-
         let user = await db.User.findOne({
             where: { id: data.id }
         });
-
         if (user) {
-            // Check if email has changed and if the new email is already taken
-            if (data.email && data.email !== user.email) {
-                let isEmailExist = await checkEmailExist(data.email);
-                if (isEmailExist) {
-                    return {
-                        EM: 'The email is already existed',
-                        EC: 1,
-                        DT: 'email'
-                    };
-                }
-            }
-
-            // Update user data
             await user.update({
                 username: data.username,
                 address: data.address,
                 sex: data.sex,
-                groupId: data.groupId,
-                email: data.email // Update email if provided
+                groupId: data.groupId
             });
-
             return {
                 EM: 'Update user success',
                 EC: 0,
@@ -154,7 +138,7 @@ const updateUser = async (data) => {
             DT: []
         };
     }
-}
+};
 
 
 const deleteUser = async (id) => {

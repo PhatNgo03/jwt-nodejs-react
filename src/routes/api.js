@@ -9,6 +9,7 @@ const router = express.Router();
  * @param {*} app -express app
  */
 
+
 const initApiRoutes = (app) => {
     //rest api
     //Get - R, POST - C, PUT - U, DELETE- D

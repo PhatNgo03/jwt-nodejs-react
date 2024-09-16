@@ -8,8 +8,10 @@ const handleHelloWorld = (req, res) => {
 const handleUserPage = async (req, res) => {
     //model => get data from database
 
+    console.log('Cookies: ', req.cookies)
+    res.cookie("test", "test cookie")
+    console.log('Signed Cookies: ', req.signedCookies)
     let userList = await userService.getUserList();
-    await userService.deleteUser(4);
     return res.render("user.ejs", { userList });
 }
 

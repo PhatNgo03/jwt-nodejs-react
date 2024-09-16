@@ -1,6 +1,5 @@
 import loginRegisterService from '../service/loginRegisterService'
 
-
 const testApi = (req, res) => {
     return res.status(200).json({
         message: 'ok',
@@ -46,10 +45,11 @@ const handleLogin = async (req, res) => {
     try {
 
         let data = await loginRegisterService.handleUserLogin(req.body);
+        res.cookie("jwt", data.DT.access_token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
         return res.status(200).json({
             EM: data.EM, // error message
             EC: data.EC, //erorr code
-            DT: data.DT,//data
+            DT: data.DT,//data  
         })
     }
     catch (e) {
