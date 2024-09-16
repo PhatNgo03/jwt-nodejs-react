@@ -2,6 +2,7 @@ import express from "express";
 import apiController from '../controller/apiController';
 import userController from '../controller/userController';
 import groupController from '../controller/groupController';
+import { checkUserJWT, checkUserPermission } from '../middleware/JWTAction';
 const router = express.Router();
 
 /**
@@ -9,10 +10,23 @@ const router = express.Router();
  * @param {*} app -express app
  */
 
+// const checkUserLogin = (req, res, next) => {
+//     const nonSecurePaths = ['/', '/register', '/login'];
+//     if (nonSecurePaths.includes(req.path)) return next();
+
+//     if(user){
+//     next();
+//     }
+//     else {
+
+//     }
+// }
 
 const initApiRoutes = (app) => {
     //rest api
     //Get - R, POST - C, PUT - U, DELETE- D
+
+    router.all('*', checkUserJWT, checkUserPermission,);
     router.get("/test-api", apiController.testApi);
     router.post("/register", apiController.handleRegister);
     router.post("/login", apiController.handleLogin);

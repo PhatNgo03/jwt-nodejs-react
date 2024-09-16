@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //config cookies-parser
 app.use(cookieParser());
+
 //init web routes
 initWebRoutes(app);
 //init api routes
