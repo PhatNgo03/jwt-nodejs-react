@@ -3,7 +3,7 @@ require("dotenv").config();
 import jwt from "jsonwebtoken";
 
 
-const nonSecurePaths = ['/', '/register', '/login'];
+const nonSecurePaths = ['/', '/register', '/login',];
 
 
 const createJWT = (payload) => {
@@ -38,6 +38,7 @@ const checkUserJWT = (req, res, next) => {
         let decoded = verifyToken(token);
         if (decoded) {
             req.user = decoded;
+            req.token = token;
             next();
         }
         else {
@@ -57,7 +58,7 @@ const checkUserJWT = (req, res, next) => {
 }
 
 const checkUserPermission = (req, res, next) => {
-    if (nonSecurePaths.includes(req.path)) return next();
+    if (nonSecurePaths.includes(req.path) || req.path === '/account') return next();
 
     if (req.user) {
         let email = req.user.email;
