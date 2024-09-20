@@ -96,6 +96,11 @@ const createNewUser = async (data) => {
     }
     catch (err) {
         console.log(err);
+        return {
+            EM: 'Something wrong with services',
+            EC: -2,
+            DT: []
+        };
     }
 }
 
