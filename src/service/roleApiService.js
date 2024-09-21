@@ -116,6 +116,72 @@ const getRoleByGroup = async (id) => {
         };
     }
 }
+
+const assignRoleToGroup = async (data) => {
+    try {
+
+        await db.Group_Role.destroy({
+            where: { groupId: +data.groupId }
+        })
+        await db.Group_Role.bulkCreate(data.groupRoles, {
+            fields: ['groupId', 'roleId']
+        });
+        return {
+            EM: `Assgin Role to Group succees`,
+            EC: 0,
+            DT: []
+        };
+    }
+    catch (err) {
+        console.log(err);
+        return {
+            EM: 'Something wrong with services',
+            EC: -2,
+            DT: []
+        };
+    }
+}
+
+// const assignRoleToGroup = async (data) => {
+//     try {
+//         // Log dữ liệu đầu vào để kiểm tra
+//         console.log("Data received for group role assignment:", data);
+
+//         // Xóa các vai trò cũ dựa trên groupId
+//         await db.Group_Role.destroy({
+//             where: { groupId: +data.groupId }
+//         });
+
+//         // Kiểm tra và log dữ liệu trước khi tạo mới
+//         if (data.groupRoles && data.groupRoles.length > 0) {
+//             console.log("Data to bulkCreate:", data.groupRoles);
+
+//             await db.Group_Role.bulkCreate(data.groupRoles);
+//         } else {
+//             console.log("No roles to assign, groupRoles is empty.");
+//             return {
+//                 EM: 'No roles to assign.',
+//                 EC: 1,
+//                 DT: []
+//             };
+//         }
+
+//         return {
+//             EM: `Assign Role to Group success`,
+//             EC: 0,
+//             DT: []
+//         };
+//     }
+//     catch (err) {
+//         console.log("Error in assignRoleToGroup:", err);
+//         return {
+//             EM: 'Something wrong with services',
+//             EC: -2,
+//             DT: []
+//         };
+//     }
+// }
+
 module.exports = {
-    createNewRoles, getAllRoles, deleteRole, getRoleByGroup
+    createNewRoles, getAllRoles, deleteRole, getRoleByGroup, assignRoleToGroup
 }
